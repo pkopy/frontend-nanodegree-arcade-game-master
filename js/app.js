@@ -22,22 +22,27 @@
 // };
 
 class Enemy {
-    constructor(x, y) {
+    constructor(x, y, dt = Math.floor(Math.random()*10+1)) {
         this.x = x;
         this.y = y;
+        this.dt = dt;
         this.sprite = 'images/enemy-bug.png';
     }
     update(dt) {
-        
+        this.x +=  speed * this.dt;
+        if(this.x >=505) {
+            this.x = -100;
+            this.dt = Math.floor(Math.random()*10+1)
+        }
     }
     render() {
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     }
 }
-
-const enemy1 = new Enemy(0,0);
-const enemy2 = new Enemy(0,1);
-const enemy3 = new Enemy(0,2);
+let speed = 1;
+const enemy1 = new Enemy(0,60);
+const enemy2 = new Enemy(0,140);
+const enemy3 = new Enemy(0,220);
 const allEnemies = [enemy1, enemy2, enemy3]
 console.log(enemy1)
 // Now write your own player class
@@ -96,7 +101,7 @@ class Player {
 
     }
 }
-const player = new Player(2,100,400);
+const player = new Player(4,100,400);
 console.log(player)
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
