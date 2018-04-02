@@ -57,6 +57,12 @@ console.log(enemy1)
 // a handleInput() method.
 class Player {
     constructor(look = 0, x, y) {
+        this.look = this.changeLook(look);
+        this.x = x;
+        this.y = y;
+        
+    }
+    changeLook(look) {
         switch(look){
             case 0:
             this.look = 'images/char-boy.png';
@@ -73,13 +79,11 @@ class Player {
             case 4:
             this.look = 'images/char-princess-girl.png';
             break;
-
         }
-        this.x = x;
-        this.y = y;
-        
+        return this.look;
     }
     update() {
+        this.render(); 
 
     }
     render() {
@@ -94,36 +98,33 @@ class Player {
     handleInput(input) {
         switch(input) {
             case 'left':
-            console.log(this.x)
             if (this.x > 0){
-                this.x -= 100;
-                this.render(); 
+                this.x -= 100;   
             }
             break;
             case 'right':
             if (this.x < 399){
-                this.x += 100;
-                this.render(); 
+                this.x += 100;    
             }
             break;
             case 'up':
             if (this.y > 0){
-                this.y -= 85;
-                this.render(); 
+                this.y -= 85;    
             }
             break;
             case 'down':
             if (this.y < 399){
-                this.y += 85;
-                this.render(); 
+                this.y += 85;    
             }
             break;
         }
 
     }
 }
+const player = new Player(0,200,400);
 
-console.log(document.querySelector('.start'))
+ 
+
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
@@ -133,13 +134,4 @@ console.log(document.querySelector('.start'))
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
-document.addEventListener('keyup', function(e) {
-    var allowedKeys = {
-        37: 'left',
-        38: 'up',
-        39: 'right',
-        40: 'down'
-    };
 
-    player.handleInput(allowedKeys[e.keyCode]);
-});

@@ -68,12 +68,32 @@ var Engine = (function(global) {
         render();
         start()
     }
-    const player = new Player(4,200,400);
+    
+    /*
+     * strat functionl waits for choose player
+     * 
+     */
     function start() {
-        document.querySelector('.start').addEventListener('click',function() {
+        const startPanel = document.querySelector('.start')
+        startPanel.addEventListener('click',function() {
+            player.changeLook(3);
             main();
-            console.log('x')
-            });
+            startMove();
+            startPanel.style.display = 'none';
+        });
+    }
+
+    function startMove () {
+        document.addEventListener('keyup', function(e) {
+            var allowedKeys = {
+                37: 'left',
+                38: 'up',
+                39: 'right',
+                40: 'down'
+            };
+        
+            player.handleInput(allowedKeys[e.keyCode]);
+        });
     }
 
     /* This function is called by main (our game loop) and itself calls all
@@ -196,4 +216,9 @@ var Engine = (function(global) {
      * from within their app.js files.
      */
     global.ctx = ctx;
+
+    window.init = {
+        main: main,
+    }
+
 })(this);

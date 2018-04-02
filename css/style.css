@@ -1,6 +1,9 @@
 body {
     text-align: center;
 }
+/*
+ * Start panel
+ */
 
 .start {
     width:  300px;
@@ -13,5 +16,32 @@ body {
     top: 22%;
     border-radius: 10px;
     border: 1px solid #f3eaea;
-    /* display: none; */
+    display: flex;
 }
+
+.nav {
+    width: 20%;
+    height: 50%;
+    margin: auto;
+    /* margin-bottom: auto; */
+    display: flex;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+#left {
+    margin-left: 15px;
+}
+
+.player {
+    
+    width: 50%;
+    height: 50%;
+
+}
+
+/* .player img {
+    width: 101px;
+    height: 171px;
+} */
