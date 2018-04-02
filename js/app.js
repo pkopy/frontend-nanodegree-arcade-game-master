@@ -36,6 +36,12 @@ const playerImages = [
     'images/char-princess-girl.png'
 ];
 
+const goodItems = [
+    'images/Gem-Blue-small.png',
+    'images/Gem-Green-small.png',
+    'images/Gem-Orange-small.png'
+];
+
 class Enemy {
     constructor(x, y, dt = Math.floor(Math.random()*10+1)) {
         this.x = x;
@@ -44,9 +50,12 @@ class Enemy {
         this.sprite = 'images/enemy-bug.png';
     }
     update(dt) {
+        const posY = [60, 140, 220]
         this.x +=  speed * this.dt;
         if(this.x >=505) {
             this.x = -100;
+            this.y = posY[Math.floor(Math.random()*3)];
+            // this.sprite = playerImages[Math.floor(Math.random()*5)]
             this.dt = Math.floor(Math.random()*10+1)
         }
     }
@@ -55,49 +64,42 @@ class Enemy {
     }
 }
 
-const enemy1 = new Enemy(0,60);
-const enemy2 = new Enemy(0,140);
-const enemy3 = new Enemy(0,220);
-const allEnemies = [enemy1, enemy2, enemy3]
+const enemy1 = new Enemy(-100,60);
+const enemy2 = new Enemy(-100,140);
+const enemy3 = new Enemy(-100,220);
+const enemy4 = new Enemy(-100, 60)
+const enemy5 = new Enemy(-100, 140)
+const enemy6 = new Enemy(-100, 220)
+const allEnemies = [enemy1, enemy2, enemy3, enemy4]
 
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
 class Player {
     constructor(look = 0, x, y) {
-        this.look = this.changeLook(look);
+        this.look = this.changeLook(look, playerImages);
         this.x = x;
         this.y = y;
+        this.points = 0;
         
     }
-    changeLook(look) {
-        switch(look){
-            case 0:
-            this.look = 'images/char-boy.png';
-            break;
-            case 1:
-            this.look = 'images/char-cat-girl.png';
-            break;
-            case 2:
-            this.look = 'images/char-horn-girl.png';
-            break;
-            case 3:
-            this.look = 'images/char-pink-girl.png';
-            break;
-            case 4:
-            this.look = 'images/char-princess-girl.png';
-            break;
-        }
+    changeLook(look, array) {
+
+        this.look = array[look]
         return this.look;
     }
     update() {
         this.render(); 
-
     }
     render() {
         ctx.drawImage(Resources.get(this.look), this.x, this.y);
     }
     
+    adPoints() {
+        if (this.y > -25 && this.y < 240) {
+            this.points += 10;
+        }
+    }
 
     /*
      * handleinput moves player on the board, and prevent him from leaving the game place 
@@ -107,30 +109,56 @@ class Player {
         switch(input) {
             case 'left':
             if (this.x > 0){
-                this.x -= 100;   
+                this.x -= 100; 
+                this.adPoints();  
             }
             break;
             case 'right':
             if (this.x < 399){
-                this.x += 100;    
+                this.x += 100; 
+                this.adPoints();     
             }
             break;
             case 'up':
             if (this.y > 0){
-                this.y -= 85;    
+                this.y -= 85;  
+                this.adPoints();    
             }
             break;
             case 'down':
             if (this.y < 399){
-                this.y += 85;    
+                this.y += 85; 
+                this.adPoints();     
             }
             break;
         }
 
     }
 }
-const player = new Player(0,200,400);
 
+class GoodItem {
+    constructor (look = 0, x, y) {
+        this.x = x;
+        this.y = y;
+        this.look = this.changeLook(look, goodItems)
+    }
+    changeLook(look, array) {
+
+        this.look = array[look]
+        return this.look;
+    }
+
+    update() {
+        this.render(); 
+    }
+    render() {
+        ctx.drawImage(Resources.get(this.look), this.x, this.y);
+    }
+}
+const player = new Player(0,200,400);
+const item1 = new GoodItem(0, 325, 200)
+console.log(item1)
+// ;
  
 
 

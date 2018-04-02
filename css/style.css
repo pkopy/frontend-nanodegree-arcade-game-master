@@ -41,7 +41,6 @@ body {
 
 }
 
-/* .player img {
-    width: 101px;
-    height: 171px;
-} */
+.player img {
+    cursor: pointer;
+}
