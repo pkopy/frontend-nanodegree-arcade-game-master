@@ -70,16 +70,43 @@ var Engine = (function(global) {
     }
     
     /*
-     * strat functionl waits for choose player
+     * strat function waits for choose player
      * 
      */
     function start() {
-        const startPanel = document.querySelector('.start')
-        startPanel.addEventListener('click',function() {
-            player.changeLook(3);
+        const startPanel = document.querySelector('.start');
+        const playerImg = document.querySelector('.player');
+        
+        playerImg.addEventListener('click',function() {
+            // player.changeLook(3);
             main();
             startMove();
             startPanel.style.display = 'none';
+        });
+
+        const leftArrow = document.querySelector('#left');
+        const rightArrow = document.querySelector('#right');
+        let count = 0;
+        rightArrow.addEventListener('click', function() {
+            count++;
+            if (count === playerImages.length) {
+                count = 0;
+            }
+            playerImg.firstElementChild.src = playerImages[count];
+            
+            player.changeLook(count);
+            render();
+        });
+
+        leftArrow.addEventListener('click', function() {
+            count--;
+            if (count < 0) {
+                count = playerImages.length - 1;
+            }
+            playerImg.firstElementChild.src = playerImages[count];
+            
+            player.changeLook(count);
+            render();
         });
     }
 

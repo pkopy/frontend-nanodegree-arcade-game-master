@@ -27,6 +27,14 @@
  * create object
  * 
  */
+let speed = 1;
+const playerImages = [
+    'images/char-boy.png',
+    'images/char-cat-girl.png',
+    'images/char-horn-girl.png',
+    'images/char-pink-girl.png',
+    'images/char-princess-girl.png'
+];
 
 class Enemy {
     constructor(x, y, dt = Math.floor(Math.random()*10+1)) {
@@ -46,12 +54,12 @@ class Enemy {
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     }
 }
-let speed = 1;
+
 const enemy1 = new Enemy(0,60);
 const enemy2 = new Enemy(0,140);
 const enemy3 = new Enemy(0,220);
 const allEnemies = [enemy1, enemy2, enemy3]
-console.log(enemy1)
+
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
