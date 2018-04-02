@@ -21,6 +21,13 @@
 //     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 // };
 
+/*
+ * every enemy has 3 attribute, pos x, pos y and dt a time delta between ticks
+ * in this case dt is a random from 0 to 10, but dt maybe be also set while  
+ * create object
+ * 
+ */
+
 class Enemy {
     constructor(x, y, dt = Math.floor(Math.random()*10+1)) {
         this.x = x;
@@ -82,20 +89,29 @@ class Player {
     handleInput(input) {
         switch(input) {
             case 'left':
-            this.x -= 100;
-            this.render();
+            console.log(this.x)
+            if (this.x > 0){
+                this.x -= 100;
+                this.render(); 
+            }
             break;
             case 'right':
-            this.x += 100;
-            this.render();
+            if (this.x < 399){
+                this.x += 100;
+                this.render(); 
+            }
             break;
             case 'up':
-            this.y -= 85;
-            this.render();
+            if (this.y > 0){
+                this.y -= 85;
+                this.render(); 
+            }
             break;
             case 'down':
-            this.y += 85;
-            this.render();
+            if (this.y < 399){
+                this.y += 85;
+                this.render(); 
+            }
             break;
         }
 
@@ -118,6 +134,6 @@ document.addEventListener('keyup', function(e) {
         39: 'right',
         40: 'down'
     };
-console.log(allowedKeys[e.keyCode])
+
     player.handleInput(allowedKeys[e.keyCode]);
 });
