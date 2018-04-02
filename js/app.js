@@ -50,8 +50,9 @@ class Enemy {
         this.sprite = 'images/enemy-bug.png';
     }
     update(dt) {
-        const posY = [60, 140, 220]
+        const posY = [60, 145, 230]
         this.x +=  speed * this.dt;
+        this.isColison();
         if(this.x >=505) {
             this.x = -100;
             this.y = posY[Math.floor(Math.random()*3)];
@@ -62,14 +63,19 @@ class Enemy {
     render() {
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     }
+    isColison() {
+        if (this.x >= player.x -70  && this.x <= player.x + 70 && this.y === player.y ) {
+           this.dt =0;
+        }
+    }
 }
 
 const enemy1 = new Enemy(-100,60);
-const enemy2 = new Enemy(-100,140);
-const enemy3 = new Enemy(-100,220);
+const enemy2 = new Enemy(-100,145);
+const enemy3 = new Enemy(-100,230);
 const enemy4 = new Enemy(-100, 60)
-const enemy5 = new Enemy(-100, 140)
-const enemy6 = new Enemy(-100, 220)
+const enemy5 = new Enemy(-100, 145)
+const enemy6 = new Enemy(-100, 230)
 const allEnemies = [enemy1, enemy2, enemy3, enemy4]
 
 // Now write your own player class
@@ -122,7 +128,8 @@ class Player {
             case 'up':
             if (this.y > 0){
                 this.y -= 85;  
-                this.adPoints();    
+                this.adPoints(); 
+                console.log(this.y)   
             }
             break;
             case 'down':
