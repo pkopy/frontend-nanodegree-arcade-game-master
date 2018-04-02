@@ -65,7 +65,15 @@ var Engine = (function(global) {
     function init() {
         reset();
         lastTime = Date.now();
-        main();
+        render();
+        start()
+    }
+    const player = new Player(4,200,400);
+    function start() {
+        document.querySelector('.start').addEventListener('click',function() {
+            main();
+            console.log('x')
+            });
     }
 
     /* This function is called by main (our game loop) and itself calls all

@@ -84,8 +84,13 @@ class Player {
     }
     render() {
         ctx.drawImage(Resources.get(this.look), this.x, this.y);
-
     }
+    
+
+    /*
+     * handleinput moves player on the board, and prevent him from leaving the game place 
+     */
+
     handleInput(input) {
         switch(input) {
             case 'left':
@@ -117,8 +122,9 @@ class Player {
 
     }
 }
-const player = new Player(4,100,400);
-console.log(player)
+
+console.log(document.querySelector('.start'))
+
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
