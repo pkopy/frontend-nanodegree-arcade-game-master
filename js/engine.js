@@ -13,20 +13,22 @@
  * writing app.js a little simpler to work with.
  */
 
-var Engine = (function(global) {
+var Engine = (function (global) {
     /* Predefine the variables we'll be using within this scope,
      * create the canvas element, grab the 2D context for that canvas
      * set the canvas elements height/width and add it to the DOM.
      */
-    var doc = global.document,
-        win = global.window,
-        canvas = doc.createElement('canvas'),
-        ctx = canvas.getContext('2d'),
-        lastTime;
-
+    const container = document.querySelector('.container');
+    const win = global.window;
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    let lastTime;
+    let myReq;
+    // console.log(doc)
+    // console.log(win)
     canvas.width = 505;
     canvas.height = 606;
-    doc.body.appendChild(canvas);
+    container.appendChild(canvas);
 
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
@@ -38,7 +40,7 @@ var Engine = (function(global) {
          * would be the same for everyone (regardless of how fast their
          * computer is) - hurray time!
          */
-        var now = Date.now(),
+        let now = Date.now(),
             dt = (now - lastTime) / 1000.0;
 
         /* Call our update/render functions, pass along the time delta to
@@ -46,7 +48,9 @@ var Engine = (function(global) {
          */
         update(dt);
         render();
-        
+
+
+
 
         /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
@@ -56,7 +60,28 @@ var Engine = (function(global) {
         /* Use the browser's requestAnimationFrame function to call this
          * function again as soon as the browser is able to draw another frame.
          */
-        win.requestAnimationFrame(main);
+        myReq = requestAnimationFrame(main);
+
+        /*
+         * This stop animation frame when enemy touchs player
+         */
+        allEnemies.forEach(function (enemy) {
+            if (enemy.collision === true) {
+                cancelAnimationFrame(myReq);
+                player.x = 200;
+                player.y = 400;
+                player.lives--;
+
+                if (player.lives !== 0) {
+                    setTimeout(() => myReq = requestAnimationFrame(main), 1000)
+                } else {
+                    document.removeEventListener('keyup', keys)
+                    reset();
+                }
+                    enemy.collision = false;
+                enemy.dt = Math.floor(Math.random() * 10 + 1)
+            }
+        });
     }
 
     /* This function does some initial setup that should only occur once,
@@ -64,26 +89,38 @@ var Engine = (function(global) {
      * game loop.
      */
     function init() {
-        reset();
+        //reset();
         lastTime = Date.now();
         render();
         start()
     }
-    
+
     /*
      * strat function waits for choose player
      * 
      */
     function start() {
         const startPanel = document.querySelector('.start');
+        startPanel.style.display = 'flex';
         const playerImg = document.querySelector('.player');
-        
-        playerImg.addEventListener('click',function() {
+
+        playerImg.addEventListener('click', () => {
             // player.changeLook(3);
+            cancelAnimationFrame(myReq);
             main();
             startMove();
             startPanel.style.display = 'none';
         });
+
+        // Add heart to panel lives
+
+        for(i = 0; i < 3; i++) {
+            let live = document.createElement('li');
+            live.innerHTML = '<img src="images/heart1.png" alt="heart">';
+            console.log(live)
+            document.querySelector('.lives ul').appendChild(live)
+            // document.querySelector('.lives ul').appendChild(live)
+        }
 
         const leftArrow = document.querySelector('#left');
         const rightArrow = document.querySelector('#right');
@@ -108,19 +145,38 @@ var Engine = (function(global) {
             render();
         });
     }
+    function keys(e) {
+        let allowedKeys = {
+            37: 'left',
+            38: 'up',
+            39: 'right',
+            40: 'down'
+        };
+        player.handleInput(allowedKeys[e.keyCode]);
 
-    function startMove () {
-        document.addEventListener('keyup', function(e) {
-            var allowedKeys = {
-                37: 'left',
-                38: 'up',
-                39: 'right',
-                40: 'down'
-            };
-        
-            player.handleInput(allowedKeys[e.keyCode]);
-        });
     }
+
+    // function clickMouseInCanvas(e) {
+    //     console.log(e)
+    //     if (e.offsetX > player.x + 50) {
+    //         player.handleInput('right')
+    //     }
+    //     if (e.offsetX < player.x - 50) {
+    //         player.handleInput('left')
+    //     }
+    //     if (e.offsetY > player.y + 50) {
+    //         player.handleInput('down')
+    //     }
+    //     if (e.offsetY < player.y) {
+    //         player.handleInput('up')
+    //     }
+    // }
+
+    function startMove() {
+        document.addEventListener('keyup', keys);
+        
+    }
+
 
     /* This function is called by main (our game loop) and itself calls all
      * of the functions which may need to update entity's data. Based on how
@@ -144,11 +200,12 @@ var Engine = (function(global) {
      * render methods.
      */
     function updateEntities(dt) {
-        allEnemies.forEach(function(enemy) {
+        item1.update();
+        allEnemies.forEach(function (enemy) {
             enemy.update(dt);
         });
         player.update();
-        
+
     }
 
     /* This function initially draws the "game level", it will then call
@@ -162,19 +219,19 @@ var Engine = (function(global) {
          * for that particular row of the game level.
          */
         var rowImages = [
-                'images/water-block.png',   // Top row is water
-                'images/stone-block.png',   // Row 1 of 3 of stone
-                'images/stone-block.png',   // Row 2 of 3 of stone
-                'images/stone-block.png',   // Row 3 of 3 of stone
-                'images/grass-block.png',   // Row 1 of 2 of grass
-                'images/grass-block.png'   // Row 2 of 2 of grass
+                'images/water-block.png', // Top row is water
+                'images/stone-block.png', // Row 1 of 3 of stone
+                'images/stone-block.png', // Row 2 of 3 of stone
+                'images/stone-block.png', // Row 3 of 3 of stone
+                'images/grass-block.png', // Row 1 of 2 of grass
+                'images/grass-block.png' // Row 2 of 2 of grass
             ],
             numRows = 6,
             numCols = 5,
             row, col;
-        
+
         // Before drawing, clear existing canvas
-        ctx.clearRect(0,0,canvas.width,canvas.height)
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
 
         /* Loop through the number of rows and columns we've defined above
          * and, using the rowImages array, draw the correct image for that
@@ -204,9 +261,11 @@ var Engine = (function(global) {
         /* Loop through all of the objects within the allEnemies array and call
          * the render function you have defined.
          */
-        item1.render();
+        allItems.forEach(function (item) {
+            item.render();
+        })
         player.render();
-        allEnemies.forEach(function(enemy) {
+        allEnemies.forEach(function (enemy) {
             enemy.render();
         });
 
@@ -218,6 +277,14 @@ var Engine = (function(global) {
      */
     function reset() {
         // noop
+        allEnemies.forEach(function (enemy) {
+            enemy.x = -120;
+        });
+        update(1)
+        player.lives = 3;
+        render();
+        start();
+
     }
 
     /* Go ahead and load all of the images we know we're going to need to
@@ -238,7 +305,8 @@ var Engine = (function(global) {
         'images/navigate_next.png',
         'images/Gem-Blue-small.png',
         'images/Gem-Green-small.png',
-        'images/Gem-Orange-small.png'
+        'images/Gem-Orange-small.png',
+        'images/enemy-walec2a.png'
     ]);
 
 
@@ -250,7 +318,7 @@ var Engine = (function(global) {
      */
     global.ctx = ctx;
 
-    window.init = {
+    window.Init = {
         main: main,
     }
 
