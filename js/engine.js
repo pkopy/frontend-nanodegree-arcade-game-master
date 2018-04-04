@@ -24,8 +24,6 @@ var Engine = (function (global) {
     const ctx = canvas.getContext('2d');
     let lastTime;
     let myReq;
-    // console.log(doc)
-    // console.log(win)
     canvas.width = 505;
     canvas.height = 606;
     container.appendChild(canvas);
@@ -75,7 +73,9 @@ var Engine = (function (global) {
                 if (player.lives !== 0) {
                     setTimeout(() => myReq = requestAnimationFrame(main), 1000)
                 } else {
-                    document.removeEventListener('keyup', keys)
+                    document.removeEventListener('keyup', keys);
+                    canvas.removeEventListener("touchstart", handleStart);
+                    canvas.removeEventListener("touchend", handleEnd);
                     reset();
                 }
                     enemy.collision = false;
@@ -117,7 +117,7 @@ var Engine = (function (global) {
         for(i = 0; i < 3; i++) {
             let live = document.createElement('li');
             live.innerHTML = '<img src="images/heart1.png" alt="heart">';
-            console.log(live)
+            
             document.querySelector('.lives ul').appendChild(live)
             // document.querySelector('.lives ul').appendChild(live)
         }
@@ -156,25 +156,48 @@ var Engine = (function (global) {
 
     }
 
-    // function clickMouseInCanvas(e) {
-    //     console.log(e)
-    //     if (e.offsetX > player.x + 50) {
-    //         player.handleInput('right')
-    //     }
-    //     if (e.offsetX < player.x - 50) {
-    //         player.handleInput('left')
-    //     }
-    //     if (e.offsetY > player.y + 50) {
-    //         player.handleInput('down')
-    //     }
-    //     if (e.offsetY < player.y) {
-    //         player.handleInput('up')
-    //     }
-    // }
+    /*
+     * ScreenTouch support
+     */
+
+    let touchArray = [];
+    
+    function handleStart(evt) {
+        touchArray.push(evt.changedTouches[0]);
+        }
+        
+    function handleEnd(evt) {
+    touchArray.push(evt.changedTouches[0]);
+
+    let deltaX = touchArray[0].clientX - touchArray[1].clientX;
+    let deltaY = touchArray[0].clientY - touchArray[1].clientY;
+    let direction = '';
+
+    if (deltaY > 0 && (Math.abs(deltaY)) > Math.abs(deltaX)) {
+        direction ='up';
+    }
+    
+    if (deltaY < 0 && (Math.abs(deltaY)) > Math.abs(deltaX)) {
+        direction ='down';
+    }
+    
+    if (deltaX < 0 && (Math.abs(deltaY)) < Math.abs(deltaX)) {
+        direction ='right';
+    }
+
+    if (deltaX > 0 && (Math.abs(deltaY)) < Math.abs(deltaX) ){
+        direction ='left'
+    }
+
+    player.handleInput(direction);
+    touchArray = [];
+    }
+    
 
     function startMove() {
         document.addEventListener('keyup', keys);
-        
+        canvas.addEventListener("touchstart", handleStart, false);
+        canvas.addEventListener("touchend", handleEnd, false);
     }
 
 

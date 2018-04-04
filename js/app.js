@@ -185,15 +185,12 @@ class Player {
                 if (this.y > 0) {
                     this.y -= 85;
                     this.adPoints();
-                    console.log(this.y)
-
                 }
                 break;
             case 'down':
                 if (this.y < 399) {
                     this.y += 85;
                     this.adPoints();
-                    window.cancelAnimationFrame(Init.main)
                 }
                 break;
         }
