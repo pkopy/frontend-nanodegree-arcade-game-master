@@ -27,6 +27,7 @@ body {
 
  .lives img {
     width: 40px;
+    
  }
 
  .lives ul {
@@ -37,6 +38,33 @@ body {
     list-style: none;
     padding: 0;
  }
+
+/*
+ * Gems panel
+ */
+
+ .gems {
+    width: 60px;
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    padding-top: 2em;
+ }
+
+ .gems img {
+    width: 40px;
+    /* height: 40px; */
+ }
+
+ .gems ul {
+    padding: 0.5em;
+ }
+
+ .gems li{
+    list-style: none;
+    padding: 0;
+ }
+
 /*
  * Start panel
  */

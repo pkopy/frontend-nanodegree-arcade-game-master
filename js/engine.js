@@ -22,11 +22,17 @@ var Engine = (function (global) {
     const win = global.window;
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
+    const gems = document.createElement('div');
+    const ul = document.createElement('ul')
+    gems.appendChild(ul)
+    gems.className = 'gems';
     let lastTime;
     let myReq;
     canvas.width = 505;
     canvas.height = 606;
     container.appendChild(canvas);
+    container.appendChild(gems)
+
 
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
@@ -235,7 +241,7 @@ var Engine = (function (global) {
      * render methods.
      */
     function updateEntities(dt) {
-        item1.update();
+        // item1.update();
         allEnemies.forEach(function (enemy) {
             enemy.update(dt);
         });
@@ -318,7 +324,12 @@ var Engine = (function (global) {
             
         });
         //update(1)
+        player.clear();
+        allItems.forEach(function (item) {
+            item.render();
+        })
         player.lives = 3;
+        player.points = 0;
         render();
         start();
 
@@ -343,7 +354,8 @@ var Engine = (function (global) {
         'images/Gem-Blue-small.png',
         'images/Gem-Green-small.png',
         'images/Gem-Orange-small.png',
-        'images/enemy-walec2a.png'
+        'images/enemy-walec2a.png',
+        'images/Selector.png'
     ]);
 
 

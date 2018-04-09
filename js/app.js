@@ -33,13 +33,15 @@ const playerImages = [
     'images/char-cat-girl.png',
     'images/char-horn-girl.png',
     'images/char-pink-girl.png',
-    'images/char-princess-girl.png'
+    'images/char-princess-girl.png',
 ];
 
 const goodItems = [
     'images/Gem-Blue-small.png',
     'images/Gem-Green-small.png',
-    'images/Gem-Orange-small.png'
+    'images/Gem-Orange-small.png',
+    'images/Selector.png'
+
 ];
 
 const enemyImages = [
@@ -86,7 +88,7 @@ class Enemy {
             }
             this.sprite = enemyImages[Math.floor(Math.random() * 2)]
             this.dt = Math.floor(Math.random() * 6 + 1)
-            console.log(this)
+            // console.log(this)
         }
 
     }
@@ -105,6 +107,7 @@ class Enemy {
     }
     
     //This function prevent to collision enemies
+
     isCollisionEnemy() {
         allEnemies.forEach(enemy => {
             if ((this.x > enemy.x - 200 && this.x <= enemy.x + 10 && this.y === enemy.y) && this.x < enemy.x - 90) {
@@ -144,6 +147,7 @@ class Player {
     update() {
         this.render();
         this.getGoodItem();
+        
     }
 
     render() {
@@ -157,13 +161,40 @@ class Player {
     }
     getGoodItem() {
         // console.log(this.x + " " + this.y)
+        
+        
         allItems.forEach(item => {
+            const gems = document.querySelector('.gems ul');
+        const gem = document.createElement('li');
             if (this.x + 25 === item.x && this.y + 55 === item.y) {
+                let look = item.look
                 item.x = 1000;
+console.log()
                 this.points += item.points;
+                gem.innerHTML = `<img src="${look.substr(0, look.length - 4)}-x.png" alt="gem">`;
+            gems.appendChild(gem)
             }
+            // if(hearts.lastElementChild){
+            //     hearts.removeChild(hearts.lastElementChild)
+            // }
 
         })
+    }
+    appearItem(){
+        
+        if(this.points  > test[0] && test[0] !== 0){
+            allItems.push(item1)
+            test[0] = 0;
+            
+            
+        }else if (this.points > test[1] && test[1] !== 0){
+            allItems.push(item2)
+            test[1] = 0;
+        }
+    }
+    clear(){
+        allItems=[];
+        test =[50,100,0]
     }
 
 
@@ -178,24 +209,28 @@ class Player {
                 if (this.x > 0) {
                     this.x -= 100;
                     this.adPoints();
+                    this.appearItem();
                 }
                 break;
             case 'right':
                 if (this.x < 399) {
                     this.x += 100;
                     this.adPoints();
+                    this.appearItem();
                 }
                 break;
             case 'up':
                 if (this.y > 0) {
                     this.y -= 85;
                     this.adPoints();
+                    this.appearItem();
                 }
                 break;
             case 'down':
                 if (this.y < 399) {
                     this.y += 85;
                     this.adPoints();
+                    this.appearItem();
                 }
                 break;
         }
@@ -222,12 +257,16 @@ class GoodItem {
     update() {
         this.render();
     }
+
+
     render() {
         ctx.drawImage(Resources.get(this.look), this.x, this.y);
     }
 }
 
 const player = new Player(0, 200, 400);
-const item1 = new GoodItem(0, 325, 285, 400)
-const allItems = [item1]
+const item1 = new GoodItem(0, 325, 200, 100)
+const item2 = new GoodItem(1, 225, 285, 150)
+let allItems = []
+let test =[50,100,0]
 console.log(player)
