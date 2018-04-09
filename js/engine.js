@@ -39,12 +39,13 @@ var Engine = (function (global) {
          * computer is) - hurray time!
          */
         let now = Date.now(),
-            dt = (now - lastTime) / 1000.0;
+            dt = ((now - lastTime) / 1000.0) ;
 
         /* Call our update/render functions, pass along the time delta to
          * our update function since it may be used for smooth animation.
          */
-        update(dt);
+        update();
+        // console.log(dt)
         render();
 
 
@@ -71,15 +72,18 @@ var Engine = (function (global) {
                 player.lives--;
 
                 if (player.lives !== 0) {
+                    
                     setTimeout(() => myReq = requestAnimationFrame(main), 1000)
                 } else {
                     document.removeEventListener('keyup', keys);
                     canvas.removeEventListener("touchstart", handleStart);
                     canvas.removeEventListener("touchend", handleEnd);
+                    player.update();
                     reset();
                 }
                     enemy.collision = false;
-                enemy.dt = Math.floor(Math.random() * 10 + 1)
+                    enemy.dt = Math.floor(Math.random() * 6 + 1)
+                
             }
         });
     }
@@ -99,13 +103,14 @@ var Engine = (function (global) {
      * strat function waits for choose player
      * 
      */
+
     function start() {
         const startPanel = document.querySelector('.start');
         startPanel.style.display = 'flex';
         const playerImg = document.querySelector('.player');
 
         playerImg.addEventListener('click', () => {
-            // player.changeLook(3);
+            player.update();
             cancelAnimationFrame(myReq);
             main();
             startMove();
@@ -114,13 +119,17 @@ var Engine = (function (global) {
 
         // Add heart to panel lives
 
-        for(i = 0; i < 3; i++) {
+        const hearts = document.querySelector('.lives ul')
+        if(hearts.lastElementChild){
+            hearts.removeChild(hearts.lastElementChild)
+        }
+        for(i = 0; i < player.lives; i++) {
             let live = document.createElement('li');
             live.innerHTML = '<img src="images/heart1.png" alt="heart">';
-            
             document.querySelector('.lives ul').appendChild(live)
-            // document.querySelector('.lives ul').appendChild(live)
         }
+
+        //Choosing player's avatar
 
         const leftArrow = document.querySelector('#left');
         const rightArrow = document.querySelector('#right');
@@ -145,6 +154,8 @@ var Engine = (function (global) {
             render();
         });
     }
+
+
     function keys(e) {
         let allowedKeys = {
             37: 'left',
@@ -153,7 +164,6 @@ var Engine = (function (global) {
             40: 'down'
         };
         player.handleInput(allowedKeys[e.keyCode]);
-
     }
 
     /*
@@ -163,34 +173,36 @@ var Engine = (function (global) {
     let touchArray = [];
     
     function handleStart(evt) {
+        evt.preventDefault();
         touchArray.push(evt.changedTouches[0]);
         }
         
     function handleEnd(evt) {
-    touchArray.push(evt.changedTouches[0]);
+        evt.preventDefault()
+        touchArray.push(evt.changedTouches[0]);
 
-    let deltaX = touchArray[0].clientX - touchArray[1].clientX;
-    let deltaY = touchArray[0].clientY - touchArray[1].clientY;
-    let direction = '';
+        let deltaX = touchArray[0].clientX - touchArray[1].clientX;
+        let deltaY = touchArray[0].clientY - touchArray[1].clientY;
+        let direction = '';
 
-    if (deltaY > 0 && (Math.abs(deltaY)) > Math.abs(deltaX)) {
-        direction ='up';
-    }
-    
-    if (deltaY < 0 && (Math.abs(deltaY)) > Math.abs(deltaX)) {
-        direction ='down';
-    }
-    
-    if (deltaX < 0 && (Math.abs(deltaY)) < Math.abs(deltaX)) {
-        direction ='right';
-    }
+        if (deltaY > 0 && (Math.abs(deltaY)) > Math.abs(deltaX)) {
+            direction ='up';
+        }
+        
+        if (deltaY < 0 && (Math.abs(deltaY)) > Math.abs(deltaX)) {
+            direction ='down';
+        }
+        
+        if (deltaX < 0 && (Math.abs(deltaY)) < Math.abs(deltaX)) {
+            direction ='right';
+        }
 
-    if (deltaX > 0 && (Math.abs(deltaY)) < Math.abs(deltaX) ){
-        direction ='left'
-    }
+        if (deltaX > 0 && (Math.abs(deltaY)) < Math.abs(deltaX) ){
+            direction ='left'
+        }
 
-    player.handleInput(direction);
-    touchArray = [];
+        player.handleInput(direction);
+        touchArray = [];
     }
     
 
@@ -302,8 +314,10 @@ var Engine = (function (global) {
         // noop
         allEnemies.forEach(function (enemy) {
             enemy.x = -120;
+            enemy.dt = Math.floor(Math.random() * 6 + 1);
+            
         });
-        update(1)
+        //update(1)
         player.lives = 3;
         render();
         start();

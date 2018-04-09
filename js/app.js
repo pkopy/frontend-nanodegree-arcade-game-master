@@ -61,11 +61,12 @@ class Enemy {
         this.collision = false;
         this.sprite = 'images/enemy-bug.png';
     }
-    update(dt) {
+    update() {
         let line;
         this.isCollison();
         this.isCollisionEnemy();
-        const posY = [60, 145, 230]
+        const posY = [60, 145, 230, 600];
+        const posX = [-100, -200 , -400, -600]
         this.x += speed * this.dt;
         // i = Math.floor(Math.random() * 4);
         // line = 'line' + i;
@@ -78,13 +79,14 @@ class Enemy {
 
         if (this.x >= 505) {
             this.y = posY[positionEnemy];
+            this.x = posX[positionEnemy];
             positionEnemy++;
-            if (positionEnemy > posY.length) {
+            if (positionEnemy > posY.length - 1) {
                 positionEnemy = 0;
             }
-            this.x = -100;
             this.sprite = enemyImages[Math.floor(Math.random() * 2)]
             this.dt = Math.floor(Math.random() * 6 + 1)
+            console.log(this)
         }
 
     }
@@ -92,19 +94,22 @@ class Enemy {
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     }
     isCollison() {
-        if (this.x >= player.x - 70 && this.x <= player.x + 50 && this.y === player.y && player.lives > 0) {
+        if (this.x >= player.x - 70 && this.x <= player.x + 50 && this.y === player.y) {
             this.dt = 0;
             const hearts = document.querySelector('.lives ul')
-            hearts.removeChild(hearts.lastElementChild)
+            if(hearts.lastElementChild){
+                hearts.removeChild(hearts.lastElementChild)
+            }
             this.collision = true;
-
         }
     }
+    
+    //This function prevent to collision enemies
     isCollisionEnemy() {
         allEnemies.forEach(enemy => {
-            if ((this.x > enemy.x - 100 && this.x <= enemy.x + 10 && this.y === enemy.y) && this.x < enemy.x - 90) {
-                enemy.dt = this.dt;
-            }
+            if ((this.x > enemy.x - 200 && this.x <= enemy.x + 10 && this.y === enemy.y) && this.x < enemy.x - 90) {
+                enemy.dt  = this.dt
+            }    
         });
     }
 }
