@@ -2,6 +2,11 @@ body {
     text-align: center;
 }
 
+@font-face {
+    font-family: Bazaronite;
+    src: url(Bazaronite.ttf);
+}
+
 .container {
     width: 650px;
     margin-left: auto;
@@ -37,6 +42,25 @@ body {
  .lives li{
     list-style: none;
     padding: 0;
+ }
+
+/*
+ * Counter panel
+ */
+ 
+ .counter {
+    width: 400px;
+    height: 30px;
+    font-family: Bazaronite;
+    font-weight: bold;
+    font-size: 3em;
+    color: #716d6d;
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    /* padding-top: 1em; */
+    position: absolute;
+    left: 50%;
  }
 
 /*

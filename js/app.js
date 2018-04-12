@@ -54,6 +54,7 @@ const lines = {
     line2: true
 }
 let positionEnemy = 0;
+const counter = document.querySelector('.counter');
 
 class Enemy {
     constructor(x, y) {
@@ -157,6 +158,7 @@ class Player {
     adPoints() {
         if (this.y > -25 && this.y < 240) {
             this.points += 10;
+            counter.innerHTML = player.points;
         }
     }
     getGoodItem() {
@@ -169,7 +171,6 @@ class Player {
             if (this.x + 25 === item.x && this.y + 55 === item.y) {
                 let look = item.look
                 item.x = 1000;
-console.log()
                 this.points += item.points;
                 gem.innerHTML = `<img src="${look.substr(0, look.length - 4)}-x.png" alt="gem">`;
             gems.appendChild(gem)
@@ -182,19 +183,23 @@ console.log()
     }
     appearItem(){
         
-        if(this.points  > test[0] && test[0] !== 0){
+        if(this.points  > whenGoodsApearArray[0] && whenGoodsApearArray[0] !== 0){
             allItems.push(item1)
-            test[0] = 0;
+            whenGoodsApearArray[0] = 0;
             
             
-        }else if (this.points > test[1] && test[1] !== 0){
+        }else if (this.points > whenGoodsApearArray[1] && whenGoodsApearArray[1] !== 0){
             allItems.push(item2)
-            test[1] = 0;
+            whenGoodsApearArray[1] = 0;
+        }
+        else if (this.points > whenGoodsApearArray[2] && whenGoodsApearArray[2] !== 0){
+            allItems.push(item3)
+            whenGoodsApearArray[2] = 0;
         }
     }
     clear(){
         allItems=[];
-        test =[50,100,0]
+        whenGoodsApear();
     }
 
 
@@ -267,6 +272,18 @@ class GoodItem {
 const player = new Player(0, 200, 400);
 const item1 = new GoodItem(0, 325, 200, 100)
 const item2 = new GoodItem(1, 225, 285, 150)
-let allItems = []
-let test =[50,100,0]
-console.log(player)
+const item3 = new GoodItem(2, 225, 285, 150)
+let allItems = [];
+
+let whenGoodsApearArray =[0,0,0]
+function whenGoodsApear(){
+    for (i = 0; i < 3; i++) {
+        if (i > 0){
+            whenGoodsApearArray[i] = whenGoodsApearArray[i - 1] + Math.round(Math.random()*300 + 200, -2);
+        }else{
+            whenGoodsApearArray[i] =  Math.round(Math.random()*300 + 100, -2);
+        }
+    }
+}
+whenGoodsApear();
+console.log(whenGoodsApearArray)

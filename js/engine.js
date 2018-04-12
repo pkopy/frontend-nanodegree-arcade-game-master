@@ -23,7 +23,8 @@ var Engine = (function (global) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     const gems = document.createElement('div');
-    const ul = document.createElement('ul')
+    const ul = document.createElement('ul');
+    
     gems.appendChild(ul)
     gems.className = 'gems';
     let lastTime;
@@ -122,6 +123,14 @@ var Engine = (function (global) {
             startMove();
             startPanel.style.display = 'none';
         });
+
+        //Display counter
+
+        counter.innerHTML = player.points;
+
+        
+
+        
 
         // Add heart to panel lives
 
@@ -246,6 +255,7 @@ var Engine = (function (global) {
             enemy.update(dt);
         });
         player.update();
+        
 
     }
 
