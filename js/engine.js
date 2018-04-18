@@ -24,7 +24,7 @@ var Engine = (function (global) {
     const ctx = canvas.getContext('2d');
     const gems = document.createElement('div');
     const ul = document.createElement('ul');
-    
+
     gems.appendChild(ul)
     gems.className = 'gems';
     let lastTime;
@@ -46,7 +46,7 @@ var Engine = (function (global) {
          * computer is) - hurray time!
          */
         let now = Date.now(),
-            dt = ((now - lastTime) / 1000.0) ;
+            dt = ((now - lastTime) / 1000.0);
 
         /* Call our update/render functions, pass along the time delta to
          * our update function since it may be used for smooth animation.
@@ -77,20 +77,25 @@ var Engine = (function (global) {
                 player.x = 200;
                 player.y = 400;
                 player.lives--;
+                stopMove();
 
                 if (player.lives !== 0) {
-                    
-                    setTimeout(() => myReq = requestAnimationFrame(main), 1000)
+
+                    setTimeout(() => {
+                        myReq = requestAnimationFrame(main);
+                        startMove();
+
+                    }, 1000)
                 } else {
-                    document.removeEventListener('keyup', keys);
-                    canvas.removeEventListener("touchstart", handleStart);
-                    canvas.removeEventListener("touchend", handleEnd);
-                    player.update();
-                    reset();
+                    setTimeout(() => {
+                        stopMove();
+                        player.update();
+                        reset();
+                    }, 1000)
                 }
-                    enemy.collision = false;
-                    enemy.dt = Math.floor(Math.random() * 6 + 1)
-                
+                enemy.collision = false;
+                enemy.dt = Math.floor(Math.random() * 6 + 1)
+
             }
         });
     }
@@ -124,21 +129,23 @@ var Engine = (function (global) {
             startPanel.style.display = 'none';
         });
 
+        item1.whenGoodsApear();
+
         //Display counter
 
-        counter.innerHTML = player.points;
+        counter.innerHTML = 'SCORE: ' + player.points;
 
-        
 
-        
+
+
 
         // Add heart to panel lives
 
         const hearts = document.querySelector('.lives ul')
-        if(hearts.lastElementChild){
+        if (hearts.lastElementChild) {
             hearts.removeChild(hearts.lastElementChild)
         }
-        for(i = 0; i < player.lives; i++) {
+        for (i = 0; i < player.lives; i++) {
             let live = document.createElement('li');
             live.innerHTML = '<img src="images/heart1.png" alt="heart">';
             document.querySelector('.lives ul').appendChild(live)
@@ -149,6 +156,8 @@ var Engine = (function (global) {
         const leftArrow = document.querySelector('#left');
         const rightArrow = document.querySelector('#right');
         let count = 0;
+
+        //Change Avatar in right
         rightArrow.addEventListener('click', () => {
             count++;
             if (count === playerImages.length) {
@@ -159,6 +168,7 @@ var Engine = (function (global) {
             render();
         });
 
+        //Change avatar in left
         leftArrow.addEventListener('click', () => {
             count--;
             if (count < 0) {
@@ -186,12 +196,15 @@ var Engine = (function (global) {
      */
 
     let touchArray = [];
-    
+
+
+    //This function catches touches point on screen and push it to touchArray
     function handleStart(evt) {
         evt.preventDefault();
         touchArray.push(evt.changedTouches[0]);
-        }
-        
+    }
+
+    //This function catches when player ends touches and also  push it to touchArray
     function handleEnd(evt) {
         evt.preventDefault()
         touchArray.push(evt.changedTouches[0]);
@@ -200,31 +213,40 @@ var Engine = (function (global) {
         let deltaY = touchArray[0].clientY - touchArray[1].clientY;
         let direction = '';
 
+        //This conditions checks which direction player swipe finger on screen
         if (deltaY > 0 && (Math.abs(deltaY)) > Math.abs(deltaX)) {
-            direction ='up';
-        }
-        
-        if (deltaY < 0 && (Math.abs(deltaY)) > Math.abs(deltaX)) {
-            direction ='down';
-        }
-        
-        if (deltaX < 0 && (Math.abs(deltaY)) < Math.abs(deltaX)) {
-            direction ='right';
+            direction = 'up';
         }
 
-        if (deltaX > 0 && (Math.abs(deltaY)) < Math.abs(deltaX) ){
-            direction ='left'
+        if (deltaY < 0 && (Math.abs(deltaY)) > Math.abs(deltaX)) {
+            direction = 'down';
+        }
+
+        if (deltaX < 0 && (Math.abs(deltaY)) < Math.abs(deltaX)) {
+            direction = 'right';
+        }
+
+        if (deltaX > 0 && (Math.abs(deltaY)) < Math.abs(deltaX)) {
+            direction = 'left'
         }
 
         player.handleInput(direction);
         touchArray = [];
     }
-    
 
+
+    //This function allows player to do moves
     function startMove() {
         document.addEventListener('keyup', keys);
         canvas.addEventListener("touchstart", handleStart, false);
         canvas.addEventListener("touchend", handleEnd, false);
+    }
+
+    //This function blocks all moves 
+    function stopMove() {
+        document.removeEventListener('keyup', keys);
+        canvas.removeEventListener("touchstart", handleStart);
+        canvas.removeEventListener("touchend", handleEnd);
     }
 
 
@@ -255,7 +277,7 @@ var Engine = (function (global) {
             enemy.update(dt);
         });
         player.update();
-        
+
 
     }
 
@@ -270,13 +292,13 @@ var Engine = (function (global) {
          * for that particular row of the game level.
          */
         var rowImages = [
-                'images/water-block.png', // Top row is water
-                'images/stone-block.png', // Row 1 of 3 of stone
-                'images/stone-block.png', // Row 2 of 3 of stone
-                'images/stone-block.png', // Row 3 of 3 of stone
-                'images/grass-block.png', // Row 1 of 2 of grass
-                'images/grass-block.png' // Row 2 of 2 of grass
-            ],
+            'images/water-block.png', // Top row is water
+            'images/stone-block.png', // Row 1 of 3 of stone
+            'images/stone-block.png', // Row 2 of 3 of stone
+            'images/stone-block.png', // Row 3 of 3 of stone
+            'images/grass-block.png', // Row 1 of 2 of grass
+            'images/grass-block.png' // Row 2 of 2 of grass
+        ],
             numRows = 6,
             numCols = 5,
             row, col;
@@ -327,19 +349,22 @@ var Engine = (function (global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-        // noop
+
         allEnemies.forEach(function (enemy) {
             enemy.x = -120;
-            enemy.dt = Math.floor(Math.random() * 6 + 1);
-            
+            enemy.dt = Math.floor(Math.random() * 3 + 1);
+
         });
-        //update(1)
-        player.clear();
+
         allItems.forEach(function (item) {
+            item.posX();
+            item.posY();
             item.render();
         })
+        ul.innerHTML = ''
         player.lives = 3;
         player.points = 0;
+        player.clear();
         render();
         start();
 
@@ -377,8 +402,6 @@ var Engine = (function (global) {
      */
     global.ctx = ctx;
 
-    window.Init = {
-        main: main,
-    }
+    
 
 })(this);

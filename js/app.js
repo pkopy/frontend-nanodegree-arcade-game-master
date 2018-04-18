@@ -28,6 +28,12 @@
  * 
  */
 let speed = 1;
+let countOfGems = 1;
+let allItems = [];
+let whenGoodsApearArray = [0, 0, 0];
+const hearts = document.querySelector('.lives ul');
+
+
 const playerImages = [
     'images/char-boy.png',
     'images/char-cat-girl.png',
@@ -48,11 +54,7 @@ const enemyImages = [
     'images/enemy-bug.png',
     'images/enemy-walec2a.png'
 ]
-const lines = {
-    line0: true,
-    line1: true,
-    line2: true
-}
+
 let positionEnemy = 0;
 const counter = document.querySelector('.counter');
 
@@ -60,26 +62,20 @@ class Enemy {
     constructor(x, y) {
         this.x = x;
         this.y = y;
-        this.dt = Math.floor(Math.random() * 10 + 1);
+        this.dt = Math.floor(Math.random() * 2 + 1) * speed;
         this.collision = false;
         this.sprite = 'images/enemy-bug.png';
     }
     update() {
-        let line;
+
         this.isCollison();
         this.isCollisionEnemy();
         const posY = [60, 145, 230, 600];
-        const posX = [-100, -200 , -400, -600]
+        const posX = [-100, -200, -400, -600]
         this.x += speed * this.dt;
-        // i = Math.floor(Math.random() * 4);
-        // line = 'line' + i;
-        // if(this.x >= 120 && this.x <=150) {
 
-        //     // console.log(lines[line]);
-        //     lines[line] = false
 
-        // }
-
+        //This condition checks when enemy is out of board
         if (this.x >= 505) {
             this.y = posY[positionEnemy];
             this.x = posX[positionEnemy];
@@ -88,32 +84,32 @@ class Enemy {
                 positionEnemy = 0;
             }
             this.sprite = enemyImages[Math.floor(Math.random() * 2)]
-            this.dt = Math.floor(Math.random() * 6 + 1)
-            // console.log(this)
+            this.dt = Math.floor(Math.random() * 2 + 1) * speed;
         }
 
     }
     render() {
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     }
+
+    //This method checks is enemy touch player and remove heart from lives panel
     isCollison() {
         if (this.x >= player.x - 70 && this.x <= player.x + 50 && this.y === player.y) {
             this.dt = 0;
-            const hearts = document.querySelector('.lives ul')
-            if(hearts.lastElementChild){
+            
+            if (hearts.lastElementChild) {
                 hearts.removeChild(hearts.lastElementChild)
             }
             this.collision = true;
         }
     }
-    
-    //This function prevent to collision enemies
 
+    //This method prevent to collision enemies
     isCollisionEnemy() {
         allEnemies.forEach(enemy => {
             if ((this.x > enemy.x - 200 && this.x <= enemy.x + 10 && this.y === enemy.y) && this.x < enemy.x - 90) {
-                enemy.dt  = this.dt
-            }    
+                enemy.dt = this.dt
+            }
         });
     }
 }
@@ -121,10 +117,10 @@ class Enemy {
 const enemy1 = new Enemy(-100, 60);
 const enemy2 = new Enemy(-100, 145);
 const enemy3 = new Enemy(-100, 230);
-const enemy4 = new Enemy(-100, 600)
-const enemy5 = new Enemy(-100, 600)
-const enemy6 = new Enemy(-100, 600)
-const allEnemies = [enemy1, enemy2, enemy3, enemy4, enemy5]
+const enemy4 = new Enemy(-290, 60)
+const enemy5 = new Enemy(-290, 145)
+const enemy6 = new Enemy(-280, 230)
+const allEnemies = [enemy1, enemy2, enemy3, enemy4, enemy5, enemy6];
 
 // Now write your own player class
 // This class requires an update(), render() and
@@ -140,6 +136,8 @@ class Player {
         this.points = 0;
 
     }
+    
+    //This method change Avatar
     changeLook(look, array) {
         this.look = array[look]
         return this.look;
@@ -148,7 +146,23 @@ class Player {
     update() {
         this.render();
         this.getGoodItem();
-        
+        this.reachWatherOnBoard();
+        const gems = document.querySelector('.gems ul'); 
+        if (countOfGems >= 4) {
+            speed += 0.4;
+            countOfGems = 1;
+
+            //This loop sets new moment when goods appears
+            for (i = 0; i < 3; i++) {
+                whenGoodsApearArray[i] = player.points + (100 * i) + Math.round(Math.random() * 10 + 1) * 10;
+                setTimeout(()=>{
+                    gems.removeChild(gems.lastElementChild)
+                }, 1000);
+                
+            }
+            
+        }
+
     }
 
     render() {
@@ -158,48 +172,68 @@ class Player {
     adPoints() {
         if (this.y > -25 && this.y < 240) {
             this.points += 10;
-            counter.innerHTML = player.points;
+            counter.innerHTML = 'SCORE: ' + player.points;
         }
     }
+
+    //This method checks when player collect gems
     getGoodItem() {
-        // console.log(this.x + " " + this.y)
-        
-        
         allItems.forEach(item => {
             const gems = document.querySelector('.gems ul');
-        const gem = document.createElement('li');
+            const gem = document.createElement('li');
             if (this.x + 25 === item.x && this.y + 55 === item.y) {
                 let look = item.look
                 item.x = 1000;
                 this.points += item.points;
+                counter.innerHTML = 'SCORE: ' + player.points;
                 gem.innerHTML = `<img src="${look.substr(0, look.length - 4)}-x.png" alt="gem">`;
-            gems.appendChild(gem)
+                gems.appendChild(gem)
+                countOfGems++;
             }
-            // if(hearts.lastElementChild){
-            //     hearts.removeChild(hearts.lastElementChild)
-            // }
-
         })
+
     }
-    appearItem(){
+    appearItem() {
+
+        if (this.points > whenGoodsApearArray[0]) {
+            item1.posX();
+            item1.posY();;
+            allItems.push(item1);
+            whenGoodsApearArray[0] = 1000000;
+
+
+        } else if (this.points > whenGoodsApearArray[1]) {
+            item2.posX();
+            item2.posY();
+            allItems.push(item2);
+            whenGoodsApearArray[1] = 1000000;
+        }
+        else if (this.points > whenGoodsApearArray[2]) {
+            item3.posX();
+            item3.posY();
+            allItems.push(item3);
+            whenGoodsApearArray[2] = 1000000;
+        }
+    }
+
+    reachWatherOnBoard() {
+        if (this.y < 0) {
+            let that = this.Object;
+            setTimeout(() => {               
+                this.x = 200;
+                this.y = 400;    
+            }, 300)
+        }
         
-        if(this.points  > whenGoodsApearArray[0] && whenGoodsApearArray[0] !== 0){
-            allItems.push(item1)
-            whenGoodsApearArray[0] = 0;
-            
-            
-        }else if (this.points > whenGoodsApearArray[1] && whenGoodsApearArray[1] !== 0){
-            allItems.push(item2)
-            whenGoodsApearArray[1] = 0;
-        }
-        else if (this.points > whenGoodsApearArray[2] && whenGoodsApearArray[2] !== 0){
-            allItems.push(item3)
-            whenGoodsApearArray[2] = 0;
-        }
     }
-    clear(){
-        allItems=[];
-        whenGoodsApear();
+
+    //this method clears arrays 
+
+    clear() {
+        allItems = [];
+        whenGoodsApearArray = [0, 0, 0];
+        speed = 1;
+        countOfGems = 1;
     }
 
 
@@ -232,7 +266,7 @@ class Player {
                 }
                 break;
             case 'down':
-                if (this.y < 399) {
+                if (this.y < 399 && speed >1.8) {
                     this.y += 85;
                     this.adPoints();
                     this.appearItem();
@@ -267,23 +301,31 @@ class GoodItem {
     render() {
         ctx.drawImage(Resources.get(this.look), this.x, this.y);
     }
+    
+    //This method sets when goods can appears on screen
+    whenGoodsApear() {
+        for (let i = 0; i < 3; i++) {
+            whenGoodsApearArray[i] += (100 * i) + Math.round(Math.random() * 10 + 1) * 10;
+        }
+    }
+
+    posX() {
+        this.x = itemPosX[Math.floor(Math.random() * 5)]
+    }
+
+    posY() {
+        this.y = itemPosY[Math.floor(Math.random() * 3)]
+    }
+
 }
 
 const player = new Player(0, 200, 400);
-const item1 = new GoodItem(0, 325, 200, 100)
-const item2 = new GoodItem(1, 225, 285, 150)
-const item3 = new GoodItem(2, 225, 285, 150)
-let allItems = [];
+const itemPosY = [115, 200, 285];
+const itemPosX = [25, 125, 225, 325, 425];
 
-let whenGoodsApearArray =[0,0,0]
-function whenGoodsApear(){
-    for (i = 0; i < 3; i++) {
-        if (i > 0){
-            whenGoodsApearArray[i] = whenGoodsApearArray[i - 1] + Math.round(Math.random()*300 + 200, -2);
-        }else{
-            whenGoodsApearArray[i] =  Math.round(Math.random()*300 + 100, -2);
-        }
-    }
-}
-whenGoodsApear();
-console.log(whenGoodsApearArray)
+const item1 = new GoodItem(0, 0, 0, 50)
+const item2 = new GoodItem(1, 0, 0, 80)
+const item3 = new GoodItem(2, 0, 0, 100)
+
+
+
