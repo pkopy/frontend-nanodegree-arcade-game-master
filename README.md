@@ -15,6 +15,8 @@ Every gems adds You extra points:
 - green - 80 points,
 - orange - 100 points.
 
+Control Your avatar by arrows or on touchscreen swipe in direction what you want.
+
 **Good Luck**
 
 ## Preview
